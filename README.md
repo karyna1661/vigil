@@ -1,10 +1,10 @@
-# MatchOps Commander
+# MatchOps Commander — Splunk Edition
 
-AI incident command for live-event operations.
+AI incident command for live-event operations with Splunk observability.
 
 MatchOps Commander detects operational drift during high-pressure live events, executes response work through GitLab, and preserves a visible audit trail — all deterministic, auditable, no LLM in the critical path.
 
-Built for the [Google Cloud Rapid Agent Hackathon](https://rapid-agent.devpost.com/) (GitLab track).
+Built for the [Splunk Agentic Ops Hackathon](https://splunk.devpost.com/) — Observability track.
 
 ## What It Does
 
@@ -38,7 +38,7 @@ Feed (OpsEvent[]) → Drift (DriftState) → Decision (ActionIntent[]) → Execu
 - **Runtime:** TypeScript on Node.js
 - **AI Layer:** Gemini (explanation only — not in control path)
 - **Execution:** GitLab MCP (issues, pipelines, comments)
-- **Hosting:** Google Cloud (Agent Builder / Cloud Run)
+- **Observability:** Splunk MCP Server (operational data ingestion, visualization, and alerting)
 - **Testing:** Node.js built-in test runner
 
 ## Quick Start
