@@ -167,7 +167,7 @@ severity = (timeGapScore × 0.5) + (responseRequiredScore × 0.3) + (eventPressu
 - **Bounded input** — LLM receives only structured JSON
 - **Upper bounds** — Summary <200, cause/impact <300, action <200 chars
 - **Batched concurrency** — Max 3 concurrent LLM calls
-- **Adapter pattern** — Splunk AI primary, Gemini fallback
+- **Adapter pattern** — Splunk AI primary, Mimo fallback
 - **Fallback on failure** — Returns safe defaults, never crashes
 
 ## Splunk App
