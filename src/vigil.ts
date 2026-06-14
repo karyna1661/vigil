@@ -174,20 +174,20 @@ function printRankedGaps(gaps: WorldState[]): void {
   console.log(`\n[GAPS] ${ranked.length} critical/severe alerts require attention:\n`);
   console.log(
     "Rank".padEnd(6) +
-    "Country".padEnd(24) +
+    "Country".padEnd(32) +
     "Disaster".padEnd(20) +
     "Open".padEnd(8) +
     "Severity".padEnd(10) +
     "Score".padEnd(8) +
     "Level"
   );
-  console.log("-".repeat(86));
+  console.log("-".repeat(94));
 
   for (let i = 0; i < ranked.length; i++) {
     const g = ranked[i];
     console.log(
       `#${i + 1}`.padEnd(6) +
-      g.country_name.padEnd(24) +
+      g.country_name.padEnd(32) +
       g.disaster_type.padEnd(20) +
       formatDuration(g.hours_open).padEnd(8) +
       g.gap_severity.toUpperCase().padEnd(10) +
@@ -284,7 +284,7 @@ async function runCycle(ifrc: IfrcService, cycle: number): Promise<CycleResult> 
 
     const explainStart = Date.now();
     console.log("[EXPLAIN] Generating explanations...");
-    const explained = await withTimeout(explain(scored), 15000);
+    const explained = await withTimeout(explain(scored), 30000);
     audit.push({
       phase: "explain",
       timestamp: new Date().toISOString(),
