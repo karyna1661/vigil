@@ -1,0 +1,148 @@
+{
+  "cycle": 794,
+  "timestamp": "2026-06-12T16:00:30.886Z",
+  "totalAlerts": 10,
+  "gaps": [
+    {
+      "country": "Sudan",
+      "disaster_type": "Complex Emergency",
+      "hours_open": 360,
+      "severity_level": "CRITICAL",
+      "severity_score": 1,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Democratic Republic of Congo",
+      "disaster_type": "Epidemic",
+      "hours_open": 264,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.94,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Kenya",
+      "disaster_type": "Epidemic",
+      "hours_open": 288,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.94,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Myanmar",
+      "disaster_type": "Flood",
+      "hours_open": 192,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.94,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Ethiopia",
+      "disaster_type": "Drought",
+      "hours_open": 480,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.94,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Somalia",
+      "disaster_type": "Drought",
+      "hours_open": 408,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.94,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Yemen",
+      "disaster_type": "Complex Emergency",
+      "hours_open": 552,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.94,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Nigeria",
+      "disaster_type": "Flood",
+      "hours_open": 246,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.94,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Bangladesh",
+      "disaster_type": "Flood",
+      "hours_open": 180,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.88,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    },
+    {
+      "country": "Pakistan",
+      "disaster_type": "Flood",
+      "hours_open": 120,
+      "severity_level": "CRITICAL",
+      "severity_score": 0.8,
+      "explanation_summary": "Explanation unavailable",
+      "explanation_cause": "Insufficient data",
+      "explanation_impact": "Unable to determine",
+      "recommended_action": "Manual review required"
+    }
+  ],
+  "audit": [
+    {
+      "phase": "OBSERVE",
+      "time": "16:00:30",
+      "ok": true,
+      "duration": 0
+    },
+    {
+      "phase": "DETECT",
+      "time": "16:00:30",
+      "ok": true,
+      "duration": 0
+    },
+    {
+      "phase": "SCORE",
+      "time": "16:00:30",
+      "ok": true,
+      "duration": 1
+    },
+    {
+      "phase": "EXPLAIN",
+      "time": "16:00:30",
+      "ok": true,
+      "duration": 0
+    },
+    {
+      "phase": "OUTPUT",
+      "time": "16:00:30",
+      "ok": true
+    }
+  ]
+}

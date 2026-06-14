@@ -1,0 +1,116 @@
+<dashboard>
+  <label>Vigil — Humanitarian Gap Monitor</label>
+  <description>Agentic deployment intelligence for humanitarian surge operations. Live IFRC GO data.</description>
+
+  <row>
+    <panel>
+      <title>Active Gaps by Country</title>
+      <table>
+        <search>
+          <query>index=vigil sourcetype="ifrc:surge_alert" deployment_needed=true | stats count as open_gaps by country | sort -open_gaps | head 10</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">row</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Total Alerts</title>
+      <singlevalue>
+        <search>
+          <query>index=vigil sourcetype="ifrc:surge_alert" | stats count as total</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+      </singlevalue>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Severity Distribution</title>
+      <chart>
+        <search>
+          <query>index=vigil sourcetype="vigil:scored_gap" | stats count by severity_level</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.legend.labels.placement">bottom</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Gap Severity Breakdown</title>
+      <chart>
+        <search>
+          <query>index=vigil sourcetype="ifrc:surge_alert" | stats count by status</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Critical Alerts Aging (&gt;7 days)</title>
+      <table>
+        <search>
+          <query>index=vigil sourcetype="ifrc:surge_alert" | eval days_open=round(hours_open/24,1) | where days_open > 7 | table country, disaster_type, days_open, deployment_needed | sort -days_open</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+      </table>
+    </panel>
+    <panel>
+      <title>Disaster Types</title>
+      <chart>
+        <search>
+          <query>index=vigil sourcetype="ifrc:surge_alert" | stats count by disaster_type | sort -count</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Recent Scored Gaps</title>
+      <table>
+        <search>
+          <query>index=vigil sourcetype="vigil:scored_gap" | table _time, country, disaster_type, severity_level, severity_score, explanation_summary | sort -_time | head 20</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Pipeline Health</title>
+      <singlevalue>
+        <search>
+          <query>index=vigil sourcetype="vigil:metrics" | stats latest(duration_ms) as last_cycle_ms, latest(gaps_count) as last_gaps_detected, latest(states_count) as last_alerts_processed</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+      </singlevalue>
+    </panel>
+    <panel>
+      <title>Score Distribution</title>
+      <chart>
+        <search>
+          <query>index=vigil sourcetype="vigil:scored_gap" | bin severity_score span=0.1 | stats count by severity_score | sort severity_score</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">column</option>
+      </chart>
+    </panel>
+  </row>
+
+</dashboard>

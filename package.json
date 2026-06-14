@@ -1,12 +1,19 @@
 {
-  "name": "matchops-commander",
+  "name": "vigil",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
     "test": "node --import tsx --test \"tests/**/*.test.ts\"",
-    "demo": "npx tsx src/demo/server.ts"
+    "ingest:once": "node --import tsx src/main.ts",
+    "observe": "node --import tsx src/observe.ts",
+    "vigil": "node --import tsx src/vigil.ts",
+    "dashboard": "node --import tsx dashboard/server.ts",
+    "dashboard:feed": "node --import tsx dashboard/feed.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
     "@types/node": "^20.17.19",

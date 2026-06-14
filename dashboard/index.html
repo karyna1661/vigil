@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vigil — Humanitarian Gap Monitor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0a0e17; color: #e0e6ed; min-height: 100vh; }
+    .header { background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%); border-bottom: 1px solid #21262d; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-size: 22px; font-weight: 600; color: #f0f6fc; }
+    .header h1 span { color: #58a6ff; }
+    .header .status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #8b949e; }
+    .header .status .dot { width: 8px; height: 8px; border-radius: 50%; background: #3fb950; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: #161b22; border: 1px solid #21262d; border-radius: 8px; padding: 20px; }
+    .stat-card .label { font-size: 12px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .stat-card .value { font-size: 32px; font-weight: 700; color: #f0f6fc; }
+    .stat-card .value.critical { color: #f85149; }
+    .stat-card .value.warning { color: #d29922; }
+    .stat-card .value.ok { color: #3fb950; }
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .panel { background: #161b22; border: 1px solid #21262d; border-radius: 8px; overflow: hidden; }
+    .panel-header { padding: 16px 20px; border-bottom: 1px solid #21262d; font-size: 14px; font-weight: 600; color: #f0f6fc; }
+    .panel-body { padding: 0; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 12px 20px; font-size: 11px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #21262d; background: #0d1117; }
+    td { padding: 14px 20px; font-size: 14px; border-bottom: 1px solid #21262d; }
+    tr:hover { background: #1c2128; }
+    .severity-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .severity-CRITICAL { background: rgba(248,81,73,0.15); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+    .severity-HIGH { background: rgba(210,153,34,0.15); color: #d29922; border: 1px solid rgba(210,153,34,0.3); }
+    .severity-MEDIUM { background: rgba(88,166,255,0.15); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+    .severity-LOW { background: rgba(63,185,80,0.15); color: #3fb950; border: 1px solid rgba(63,185,80,0.3); }
+    .score { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .explanation { font-size: 13px; color: #8b949e; line-height: 1.5; max-width: 300px; }
+    .explanation strong { color: #c9d1d9; }
+    .bar-chart { padding: 20px; }
+    .bar-row { display: flex; align-items: center; margin-bottom: 12px; }
+    .bar-label { width: 80px; font-size: 12px; color: #8b949e; text-transform: uppercase; }
+    .bar-track { flex: 1; height: 24px; background: #0d1117; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; }
+    .bar-fill.critical { background: linear-gradient(90deg, #f85149, #da3633); }
+    .bar-fill.high { background: linear-gradient(90deg, #d29922, #bb8009); }
+    .bar-fill.medium { background: linear-gradient(90deg, #58a6ff, #1f6feb); }
+    .bar-fill.low { background: linear-gradient(90deg, #3fb950, #238636); }
+    .cycle-log { padding: 16px 20px; max-height: 200px; overflow-y: auto; font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 12px; line-height: 1.8; }
+    .cycle-log .entry { color: #8b949e; }
+    .cycle-log .entry .time { color: #484f58; }
+    .cycle-log .entry .phase { color: #58a6ff; font-weight: 600; }
+    .cycle-log .entry .ok { color: #3fb950; }
+    .cycle-log .entry .fail { color: #f85149; }
+    .empty { padding: 40px 20px; text-align: center; color: #484f58; font-size: 14px; }
+    .footer { text-align: center; padding: 20px; color: #484f58; font-size: 12px; border-top: 1px solid #21262d; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1><span>Vigil</span> — Humanitarian Gap Monitor</h1>
+    <div class="status">
+      <div class="dot"></div>
+      <span id="statusText">Connecting...</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="stats">
+      <div class="stat-card">
+        <div class="label">Total Alerts</div>
+        <div class="value" id="totalAlerts">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Critical Gaps</div>
+        <div class="value critical" id="criticalGaps">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Countries Affected</div>
+        <div class="value warning" id="countries">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Avg Severity Score</div>
+        <div class="value" id="avgScore">--</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-header">Ranked Gaps — Sorted by Severity Score</div>
+        <div class="panel-body">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Country</th>
+                <th>Disaster</th>
+                <th>Open</th>
+                <th>Severity</th>
+                <th>Score</th>
+                <th>Explanation</th>
+              </tr>
+            </thead>
+            <tbody id="gapsTable">
+              <tr><td colspan="7" class="empty">Waiting for data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom: 16px;">
+          <div class="panel-header">Severity Distribution</div>
+          <div class="panel-body bar-chart" id="severityChart">
+            <div class="bar-row">
+              <div class="bar-label">Critical</div>
+              <div class="bar-track"><div class="bar-fill critical" id="barCritical" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">High</div>
+              <div class="bar-track"><div class="bar-fill high" id="barHigh" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Medium</div>
+              <div class="bar-track"><div class="bar-fill medium" id="barMedium" style="width: 0%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Low</div>
+              <div class="bar-track"><div class="bar-fill low" id="barLow" style="width: 0%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">Pipeline Audit Log</div>
+          <div class="panel-body cycle-log" id="auditLog">
+            <div class="entry"><span class="time">--</span> <span class="phase">SYSTEM</span> Waiting for first cycle...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Vigil — Agentic Deployment Intelligence for Humanitarian Surge Operations | Splunk Agentic Ops Hackathon 2026
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3001/api/data';
+    let cycleCount = 0;
+
+    async function fetchData() {
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('API not available');
+        const data = await res.json();
+        updateDashboard(data);
+        document.getElementById('statusText').textContent = `Live — Cycle ${data.cycle || cycleCount}`;
+      } catch (e) {
+        document.getElementById('statusText').textContent = 'Waiting for Vigil loop...';
+      }
+    }
+
+    function updateDashboard(data) {
+      if (!data.gaps || data.gaps.length === 0) return;
+
+      cycleCount = data.cycle || cycleCount;
+      const gaps = data.gaps;
+
+      document.getElementById('totalAlerts').textContent = data.totalAlerts || '--';
+      document.getElementById('criticalGaps').textContent = gaps.filter(g => g.severity_level === 'CRITICAL').length;
+      document.getElementById('countries').textContent = [...new Set(gaps.map(g => g.country))].length;
+
+      const avgScore = gaps.reduce((sum, g) => sum + (g.severity_score || 0), 0) / gaps.length;
+      document.getElementById('avgScore').textContent = avgScore.toFixed(2);
+
+      const tbody = document.getElementById('gapsTable');
+      tbody.innerHTML = gaps.map((g, i) => `
+        <tr>
+          <td style="color:#484f58">#${i + 1}</td>
+          <td><strong>${g.country}</strong></td>
+          <td>${g.disaster_type}</td>
+          <td>${g.hours_open ? Math.round(g.hours_open / 24) + 'd' : '--'}</td>
+          <td><span class="severity-badge severity-${g.severity_level}">${g.severity_level || '--'}</span></td>
+          <td class="score">${g.severity_score ? g.severity_score.toFixed(2) : '--'}</td>
+          <td class="explanation">${g.explanation_summary || '--'}</td>
+        </tr>
+      `).join('');
+
+      const counts = { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 };
+      gaps.forEach(g => { if (counts[g.severity_level] !== undefined) counts[g.severity_level]++; });
+      const maxCount = Math.max(...Object.values(counts), 1);
+      document.getElementById('barCritical').style.width = (counts.CRITICAL / maxCount * 100) + '%';
+      document.getElementById('barCritical').textContent = counts.CRITICAL;
+      document.getElementById('barHigh').style.width = (counts.HIGH / maxCount * 100) + '%';
+      document.getElementById('barHigh').textContent = counts.HIGH;
+      document.getElementById('barMedium').style.width = (counts.MEDIUM / maxCount * 100) + '%';
+      document.getElementById('barMedium').textContent = counts.MEDIUM;
+      document.getElementById('barLow').style.width = (counts.LOW / maxCount * 100) + '%';
+      document.getElementById('barLow').textContent = counts.LOW;
+
+      if (data.audit) {
+        const log = document.getElementById('auditLog');
+        log.innerHTML = data.audit.map(a =>
+          `<div class="entry"><span class="time">${a.time || ''}</span> <span class="phase">${a.phase}</span> <span class="${a.ok ? 'ok' : 'fail'}">${a.ok ? 'OK' : 'FAIL'}</span> ${a.duration ? a.duration + 'ms' : ''}</div>`
+        ).join('');
+        log.scrollTop = log.scrollHeight;
+      }
+    }
+
+    fetchData();
+    setInterval(fetchData, 5000);
+  </script>
+</body>
+</html>
